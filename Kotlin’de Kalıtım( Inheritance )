@@ -1,0 +1,168 @@
+Open in app
+Sign up
+
+Sign in
+
+
+
+
+Kotlin’de Kalıtım( Inheritance )
+
+Musa soydas
+
+·
+Follow
+
+3 min read
+·
+Aug 19, 2023
+
+Share
+
+👋🏻 👋🏻 Evett! Tekrardan herkese merhabalar. Umarım sağlığınız ve neşeniz iyidir. Bugün, Kotlin programlama dilinde class’ların içinde olan inheritance konusunu paylaşacağım. Oldukça heyecanlıyım, öyleyse hazır olduğunuzu düşünerek başlayalım, değil mi?
+
+Yazıya başlamadan önce Class konusunda başlangıç yaptığım birinci bölümü okumanızda fayda vardır. Kotlinde Class Yapısı yazımı okumak için ➤ tıklayınız ◀.
+
+Inheritance
+Inheritance, bir sınıfın başka bir sınıftan özelliklerini ve davranışlarını miras alarak genişletmesine denir.Başka bir deyimle de Bir sınıftan başka bir sınıf türetilmesi işlemine inheritance(kalıtım) denir. Miras veren sınıf, “üst sınıf” veya “ebeveyn sınıf” olarak adlandırılırken, miras alan sınıf “alt sınıf” veya “çocuk sınıf” olarak anılır. Bu mekanizma, kodun tekrarını önlemeye, hiyerarşiyi oluşturmaya ve kodu daha düzenli hale getirmeye yardımcı olmaktadır.💪🏻💪🏻
+
+Şimdi bu Inheritance kotlinde nasıl kullanılıyor ve nelere dikkat etmemiz gerekiyor hemen bakalım. Önemli yerleri işaretlerle beraber sizlere göstereceğim.
+
+Inharitance Kuralları,
+
+✨✨İlk olarak kotlin dili kalıtım almaya kapalıdır. Eğer kalıtım (inharitance) yapmak istiyorsanız, yapacağınız classı OPEN keywordü kullanılmalıdır. Aslında bi yönden de iyidir. Çünkü eğer classın başında OPEN keywordünü gördüğünüzde bu class alt sınıfa kalıtım vermiş diyebiliyorsunuz .
+
+class Telephone(){
+    /**
+     * normal class kullanımında bu şekilde yazarız
+     */
+}
+open class Telephone1(){
+    /**
+     * Miras verecek classın yazım şekli . classın başına open 
+     * yazılması zorunludur
+     */
+}
+✨✨Kalıtım verilecek sınıf , alacak sınıfı “:” sembolü ile belirtilmesi gerekmektedir.
+
+open class Telephone() {
+    /**
+     * Üst class
+     */
+
+}
+
+class Iphone() : Telephone(){
+    /**
+     * Miras alacak class
+     */
+}
+✨✨Kodda gördüğünüz gibi Iphone Classı : işareti sayesinde Telephone classını kalıtım almaktadır.
+
+❓ Peki Telephone classı constructor alsaydı nasıl olurdu ❓
+
+open class Telephone(isCamera: Boolean) {
+    /**
+     * Üst class
+     */
+
+}
+
+class Iphone(isCamera: Boolean) : Telephone(isCamera){
+    /***
+     * Miras alacak class
+     */
+}
+Artık Telephone Classı Camera özelliği olup olmadığını constructor olarak istiyor. Bundan dolayı artık miras verdiği classlarda hata verecek ve bu constructorı isteyecektir. Miras verdiği classın constructorında da istedik bunu : istedikten sonra aldığımız değeri oraya paslıyoruz.
+
+⭐⭐️ ️Eğer base sınıfın bir parametresi varsa onu kalıtım alan sınıf işlem sırasında base sınıfa bu parametreyi vermelidir
+
+
+open class BaseWithSecondaryConstructor() {
+    constructor(number: Int) : this()
+    constructor(number: Int, age: Int) : this()
+}
+
+class DerivedWithSecondaryConstructor : BaseWithSecondaryConstructor {
+    constructor(number: Int) : super(number) //super ile yukarıdaki base sınıfın Constructorına erişilmektedir
+    constructor(number: Int, age: Int) : super(number, age)
+}
+🪐🪐 Miras alınan classın constructorları var ise ( birden fazla olabilmektedir.) Miras vereceği classta bunlardan bir tanesi kesinlikle yazılmalıdır. Yoksa IDE hata verir.
+
+open class Telephone() {
+    /**
+     * Üst class
+     */
+      open fun makePhoneCall(){
+        println("Telephone makePhoneCall() çalıştı")
+    }
+}
+
+
+class Iphone() : Telephone(){
+    /**
+     * Miras alacak class
+     */
+    override fun makePhoneCall() {
+        super.makePhoneCall()
+        println("İphone makePhoneCall() çalıştı")
+    }
+
+     fun Airdrop(){
+         println("Airdrop fonskiyonu çalıştı")  
+    }
+    
+    
+
+
+}
+Telephone classında makePhoneCall() fonskiyonu eklendi. Ben bunu artık kalıtım yaptığımdan dolayı override ederek bu fonksiyonu Iphone classı kullanabilmektedir. Ancak Iphone classında yer alan Airdrop fonksiyonunu ise Telefon classı kullanamaz çünkü kalıtım almamaktadır. İstersen deneyebilirsin…
+
+override fun makePhoneCall() {
+        super.makePhoneCall()
+        println("İphone makePhoneCall() çalıştı")
+    }
+buradaki super keywordü üst classtaki fonksiyonuda çağırma anlamına gelmektedir. Eğer üst classtaki fonksiyonun çağrılmasını istemiyorsanız bunu silebilirsiniz.
+
+💥💥 Kalıtım alan sınıfa ait bir fonksiyonun kendisini kalıtım alan sınıfta override edilmesini engellemek istiyorsanız final anahtar kelimesini koymanız gerekir.Bu durumda bundan sonra kalıtım alınan sınıflara override edilmesini engellenmiş olmaktadır.
+
+open class Pen {
+
+    open fun draw() {
+        println("pen drawing")
+    }
+    // open olmadığından kalıtım yapılamaz
+    fun repairPenIfNeeded() {
+        println("pen repairing")
+    }
+    // open olmadığından kalıtım yapılamaz
+    fun changeColor() {
+        println("pen change color")
+    }
+}
+
+open class Pencil : Pen() {
+
+    final override fun draw() {
+        super.draw()
+        println("pencil drawing")
+    }
+}
+
+class FaberCastelPencil : Pencil() {
+  // Artık üst sınıfından kalıtım aldığı fonksiyonu kalıtım alamaz Pencil() classında final olarak işaretlendi   
+/* override fun draw() {
+        super.draw()
+        println("fabercastel drawing")
+    }*/ 
+}
+Kotlinde kalıtım (inheritance ) ile ilgili yazımın sonuna geldik . Umarım bu kaynak sizler için faydalı olur ve yolculuğunuzda size rehberlik eder.
+
+İyi çalışmalar dilerimm…
+
+Yazımı okuduğunuz için teşekkür ederim! Bir sonra ki yazılarımda görüşmek üzeree ! Kendinize çok iyi bakınnn.
+
+Benimle bağlantı kurmak isterseniz
+
+👉 Linkledin : https://www.linkedin.com/in/musa-soyda%C5%9F-9097a3212/
+
