@@ -1,0 +1,165 @@
+Merhaba arkadaşlar, bilindiği üzere Kotlin dili Java diline nazaran beraberinde birçok güncel yapıyı da bizlere sağlamış oldu. Bu yazımda, o yapılardan biri olan Sealed Classes konusunu sizlere aktarmaya çalışacağım.
+
+Her zaman olduğu gibi önce kavramlardan başlayıp ilerleyelim.
+
+Sealed Claslar aslında Enum classların daha gelişmiş halleridir. O halde ilk olarak Enum Class’ın ne olduğuna değinerek başlayabiliriz.
+
+Enum Classes Nedir?
+Enum sınıflar, Enumaration yani Numaralandırmanın yazılımda karşılık bulmuş halleridir. Bu sınıflar sadece Kotlin diline özgü olmayıp C++, C#, Java gibi diğer birçok programlama dillerinde de sıkça karşılaşabileceğimiz yapılardır.
+
+Enum Classes ( Numaralandırma Sınıfları ) Ne İşe Yarar?
+Aslında Enumların var olma nedeni Temiz kod ( Clean Code ) yazmak, yani daha okunaklı kod yazmak içindir.
+
+Nasıl Yani?
+
+Hemen örnekle açıklayalım : Her yazılımda, proje içinde ihtiyaç duyulan belirli türler olur. Bu türler bir kullanıcı modülü için User, Admin, SuperAdmin vb. olabildiği gibi, cihaz türleri için de IOS, ANDROID, WEB gibi olabilir. Bu örnekler arttırılabilir tabi.
+
+Proje analizi yapılırken de işte admin ise türü 1 olsun, user ise türü 2 olsun gibi muhabbetler hep geçer. Bizler de developmenti yaparken verilen değerlere göre, aşağıdaki örnekteki gibi kıyaslar yaparız.
+
+if(type==1)
+{
+    //admin
+}
+else if(type==2)
+{
+    //user
+}....
+Bir zaman sonra da analiz dökümanına bakıp dururuz, 1 neydi, 2 neydi diye. İşte Enumlar bunun önüne geçerek hem daha okunaklı bir kod yazmamızı sağlıyor, hem de hata payını azaltıyor. Böylece kodumuz da daha temiz oluyor tabi.
+
+enum class USER_TYPE {
+    ADMIN, USER, SUPER_ADMIN
+}
+if (type == USER_TYPE.ADMIN) {
+    //admin
+} else if (type == USER_TYPE.USER) {
+    //user
+}....
+Buraya kadar her şey güzel, kıyaslıyoruz, kod okunaklı iyi hoş da, ya sabit değişkenlerin değerine ihtiyaç duyarsam ne olacak?
+
+Hocam, Demin Admin için 1, User için 2 dediniz, backende de benim parametre geçmem lazım, ama 1, 2 elimde yok diyebilirsiniz.
+
+İşte o zaman da aşağıdaki örnekteki gibi Enum Constants devreye giriyor.
+
+enum class USER_TYPE(val get: Int) {
+    ADMIN(1),
+    USER(2),
+    SUPER_ADMIN(3)
+}
+user.name="Muhammet"
+user.surname="ÇAĞATAY"
+user.type = USER_TYPE.ADMIN.get
+Peki bu Enum claslara data olarak sadece Primitive Tipler ( Int, Double, Float, Boolean .. ) mi verilebiliyor?
+
+Hayır, instance tipinde de değişkenler verilebilir.
+
+Örneğin : UserInfo diye bir modelimiz olsun ve içerisinde Adı, Soyadı, Yaşı gibi 3 veri tutulsun.
+
+data class UserInfo(
+        var ad:String,
+        var soyad:String,
+        var yas:Int
+)
+Enum clasımız artık aşağıdaki gibi instance paremetre alabilir.
+
+enum class USER_TYPE(val get: UserInfo) {
+
+    ADMIN(UserInfo(
+            "Muhammet",
+            "ÇAĞATAY",
+            18
+    )),
+
+    USER(UserInfo(
+            "Mehmet", 
+            "Yılmaz",
+            43
+    )),
+
+    SUPER_ADMIN(UserInfo(
+            "Ayşe",
+            "Doğan",
+            26
+    )),
+}
+Değeri çağırırken de şu şekilde kullanabiliriz.
+
+var userType=USER_TYPE.ADMIN.get
+
+user.name    = userType.ad
+user.surname = userType.soyad
+user.age     = userType.yas
+
+Peki bu Sealed Classes Nedir?
+Sealed Classları aslında Enum’ların bir Extentionu olarak düşünebiliriz yani Enum Classların genişletilmiş hali.
+
+Peki Enumdan farkları ne?
+
+Deminki örneğimiz üzerinde ufak bir karşılaştırma yapalım, 3 tane türümüz vardı, şimdi bu türe bir de NONE ekleyelim, yani kullanıcı sisteme kayıtlı değil.
+
+enum class USER_TYPE(val get: UserInfo) {
+    NONE(UserInfo(P1,P2,P3)),
+    ADMIN(UserInfo(
+            "Muhammet",
+            "ÇAĞATAY",
+            18
+    )),
+
+    USER(UserInfo(
+            "Mehmet", 
+            "Yılmaz",
+            43
+    )),
+
+    SUPER_ADMIN(UserInfo(
+            "Ayşe",
+            "Doğan",
+            26
+    )),
+}
+UserInfo modelimizde kullanıcının 3 verisini almıştık fakat NONE tipindeki kullanıcının herhangibir verisi elimizde olmamasına rağmen enum oluştururken benden değer girmemi beklemekte.
+
+Mantıken;
+
+NONE(),
+ADMIN(UserInfo(
+            "Muhammet",
+            "ÇAĞATAY",
+            18
+    )),
+şeklinde parametesiz çağırmam gerekiyor ama Enumlar tek tür veri tipi tutabildiği için bu mümkün olmuyor.
+
+Ayrıca Enumlarda parametre varsa tüm değerler oluşturma anında set edilmeli, bu durum da kapsülleme yaparken ihtiyacımız dışındaki alanların set edilmesini zorunlu kılıyor. Bu da hem developer hem de kod temizliği açısından pek hoş değil.
+
+İşte tam da bu esnada Sealed Sınıflar imdadımıza yetişiyor.
+
+Çünkü Enumlar tek bir değişken tipi tutabiliyorken Sealed Sınıflar her bir state için farklı değişken tipi tutabilirler.
+
+Şimdi aynı şeyi Sealed Class ile deneyelim :
+
+sealed class UserType
+data class Admin(val userInfo: UserInfo) : UserType()
+data class User(val userInfo: UserInfo) : UserType()
+data class SuperAdmin(val userInfo: UserInfo) : UserType()
+object None : UserType()
+Sealed Classlar sealed anahtar kelimesi ile tanımlanırlar ve temelde birer soyut sınıftırlar, yani nesneleri türetilemez.
+
+Sealed Sınıf içeriisnde kullanılan Alt sınıfları da yine aynı dosya içerisinde olmak zorundadır fakat yerlerinin pek bir önemi yoktur.
+
+Yani yukarıda temiz bir sıra ile yazdığım Class dosyasını aşağıdaki gibi de yazsam yine çalışır.
+
+object None : UserType()
+data class User(val userInfo: UserInfo) : UserType()
+sealed class UserType
+data class SuperAdmin(val userInfo: UserInfo) : UserType()
+data class Admin(val userInfo: UserInfo) : UserType()
+Kullanımları ise aşağıdaki gibidir.
+
+when(userType){
+    is User  -> { userType.userInfo }
+    is Admin  -> { userType.userInfo }
+    is SuperAdmin    -> { userType.userInfo }
+    is None -> {}
+}
+Yararlı olması dileği ile.
+
+
