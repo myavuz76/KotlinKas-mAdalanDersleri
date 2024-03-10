@@ -1,0 +1,84 @@
+
+
+Aralık 1, 2022KOTLİN
+Kotlin Composition (Kompozisyon) Kavramı
+Bir sınıf türetilirken sadece bir sınıftan yararlanabiliriz. Birden çok fazla sınıf kullanamayız. Bu sebeple, ana sınıfın parçaları olan sınıflardan ana sınıf içinde nesneler oluştururuz. Bunun sonucunda ise oluşturacağımız bir ana sınıf nesnesini kullanarak ve onun altındaki nesneleri kullanarak o sınıfın metotlarına ve değişkenlerine ulaşabiliriz. İşe yapılan bu işleme “Composition”, Türkçe karşılığı ile “Kompozisyon” adı verilir.
+
+class VehicleMotor()
+{
+    fun startMotor(){}
+    fun stopMotor(){}
+}
+
+class Window()
+{
+    fun windowDown()
+    {
+        println("The window is down")
+    }
+    fun windowUp()
+    {
+        println("The window is up")
+    }
+}
+
+class Door()
+{
+    var window : Window = Window() // Kapı'nın bir bileşeni
+    fun openDoor(){}
+    fun closeDoor(){}
+}
+
+class Wheel()
+{
+    fun wheelSizeBar(pressure:Int)
+    {
+        println("The wheel is pumped by $pressure PSI")
+    }
+}
+
+class Car()
+{
+    var motor:VehicleMotor = VehicleMotor()
+    var leftdoor : Door = Door()
+    var rightdoor : Door = Door()
+    var wheels : Array<Wheel> = Array<Wheel>(4){Wheel()}
+}
+
+fun main(args: Array<String>)
+{
+    var myCar : Car = Car()
+    myCar.rightdoor.window.windowDown() 
+    /* Araba içerisinde tanımladığım nesneler vasıtasıyla, sağ pencereyi indir*/
+    myCar.wheels[1].wheelSizeBar(25) // Arabanın tekerleğini şişir
+    
+}
+
+Burada görüldüğü üzere Car sınıfı içinde tanımladığım nesneler vasıtasıyla main metodumda bunları birbirinden kalıtım yapmadan kullanabildim. Burada şu fark edilebilir. Görüldüğü üzere Door sınıfı içerisinde Window sınıfından window nesnesi ürettim. Bundan dolayı, Door sınıfı Window sınıfına bağımlıdır diyebiliriz. Window sınıfında bir değişiklik yaptığımızda bundan Door sınıfı da etkilenecektir. Bu etkilenmeyi burada düzeltebiliriz ancak bunu birden fazla sınıfta yaptığımızda işler tamamen karmaşık bir hal alabilir. İşte bu sorunu çözmek için devreye giren bir kavramımız var “Dependency Injection”. Bu kavramın Kotlin’de nasıl uygulandığını daha sonra ayrı bir konu olarak vereceğim.
+
+ Görüntüleme Sayısı: 1.485
+
+Hakkımda / Barış USLUCAN
+Teknoloji alanında, özellikle bilgisayar ve Android kategorilerinde gelişmiş olup, teknoloji alanında ilerlemeye eğitimle devam ediyorum.
+
+
+Önceki YazıSonraki Yazı
+
+Yorum Yaz
+E-Mail adresiniz yayınlanmayacak.
+
+Yorumunuzu buraya yazın..
+Adınız*
+Email*
+Website
+GÖZ ATABİLİRSİNİZ
+
+Kotlin Dependency Injection Nedir?
+Aralık 5, 2022
+
+Kotlin Interface Kavramı
+Aralık 1, 2022
+
+Kotlin Abstract Class ve Metotlar
+Kasım 30, 2022
+© 2017 - 2023 Barış USLUCAN tüm hakları saklıdır.
