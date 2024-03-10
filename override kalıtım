@@ -1,0 +1,67 @@
+Open in app
+Sign up
+
+Sign in
+
+
+
+Method Override Nedir?
+
+Furkan Tetik
+
+·
+Follow
+
+2 min read
+·
+Aug 30, 2019
+
+Share
+
+Yapılandırıcı ve Aşırı Yükleme yazısındaki son örneği yeniden ele alalım. Bu sefer Ogrenci sınıfına bilgiGoruntule metodu eklenmiş olsun. Bu metot erişim belirleyicisi public olduğu için, Ogrenci sınıfının alt sınıfı olan UniversiteOgrencisi sınıfına miras kalacaktır.
+
+Ogrenci Sınıfı :
+
+
+UniversiteOgrencisi Sınıfı :
+
+
+Main Sınıf :
+
+
+Yukarıda main metodu içinde bir UniversiteOgrencisi nesnesi oluşturulup bu nesne üzerinden bilgiGoruntule metodu çağırılabilir.
+
+Burada metot çağırılırken önce nesnenin ait olduğu sınıfa (bu örnekte UniversiteOgrencisi sınıfı) bakılmaktadır. Bu sınıfta böyle bir metot yoksa üst sınıfına bakılır.
+
+Uygulama 1:
+Overriding İşlemi :
+
+
+UniversiteOgrencisi sınıfının içerisine üst sınıfındaki bilgiGoruntule metodunu aynı imza ile yazıp, içeriğini değiştirebiliriz.
+Bu işleme metot örtme (method overriding) denir.
+
+Şimdi UniversiteOgrencisi nesnesi üzerinden bilgiGoruntule metodunu çağırırsak, yeni tanımladığımız metodu çalıştıracaktır (daha önce belirttiğimiz gibi önce kendi sınıfı içerisinde metodu arıyor, varsa bu metodu çalıştırıyor).
+
+Uygulama 2:
+Başka bir örnekte Kare ve Dikdortgen sınıfını ele alalım. Kare sınıfı Dikdortgen sınıfının üst sınıfıdır.
+
+Kare Sınıfı :
+
+Dikdortgen Sınıfı iki parametre kabul eden bir yapılandırıcıya sahiptir. Aynı zamanda Kare sınıfında miras aldığı kenar1 değişkenine ek olarak kenar2 değişkenine sahiptir.
+
+Main Sınıfı :
+
+Dikdortgen sınıfında alan() metoduna, örtme (override) işlemi yapılmıştır. Dolayısıyla Dikdortgen nesnesi üzerinden alan() metodu çağrılırsa, üst sınıftaki versiyonunu değil kendi içindekini çalıştıracaktır.
+
+Uygulama 3 :
+Bir başka örnekte Ev ve alt sınıfı olarak Villa sınıfını ele alalım. Villa sınıfında Ev sınıfından miras aldığı değişkenlere ek olarak havuz isminde boolean bir değişkeni daha olsun. Ev sınıfının fiyat() metodu; verilen arsa metrekare fiyatı ile evin yüzölçümünü ve verilen oda fiyatı ile oda sayısını çarpıp toplayarak sonucu döndürmektedir.
+Ev sınıfının fiyat metodundan farklı olarak Villa nesnesinin fiyatını hesaplarken, havuz varsa 50000 daha eklensin.
+
+Bunun için metot örtme(method overriding) yapabiliriz.
+
+Ev Sınıfı :
+
+Villa Sınıfı :
+
+Main Sınıfı :
+
